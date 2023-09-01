@@ -1,5 +1,5 @@
-name: 'Bitbucket Checkout'
-description: 'Checkout a repository from Bitbucket'
+name: 'Bitbucket Server Checkout'
+description: 'Checkout a repository from Bitbucket Server'
 author: WSO2
 branding:
   icon: 'arrow-up-circle'
@@ -11,9 +11,9 @@ inputs:
   token:
     required: true
     description: 'The token of the user repository'
-  username:
+  serverUrl:
     required: true
-    description: 'The username of the user repository'
+    description: 'The url of the Bitbucket Server'
   userOrgName:
     required: true
     description: 'The organization name of the user repository'

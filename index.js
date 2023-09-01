@@ -7,7 +7,7 @@ const execProm = util.promisify(exec);
 async function run() {
 try  {
     const token = core.getInput('token');
-    const username = core.getInput('username');
+    const serverUrl = core.getInput('serverUrl');
     const userOrgName = core.getInput('userOrgName');
     const userRepoName = core.getInput('userRepoName');
     const commitUser = core.getInput('commitUser');
@@ -57,7 +57,7 @@ try  {
                     console.log(stdout);
                     console.log(stderr);
                     console.log("Completed git config user.name and user.email");
-                    exec(`git remote add origin https://${username}:${token}@bitbucket.org/${userOrgName}/${userRepoName}.git`, (err, stdout, stderr) => {
+                    exec(`git config http.extraHeader="Authorization: Bearer ${token}"`,(err,stdout,stderr)=>{
                         if (err) {
                             console.log(err);
                             core.setOutput("choreo-status", "failed");
@@ -66,8 +66,10 @@ try  {
                         }
                         console.log(stdout);
                         console.log(stderr);
-                        console.log("Completed git remote add origin");
-                        exec(`git -c protocol.version=2 fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin +refs/heads/${branch}*:refs/remotes/origin/${branch}* +refs/tags/${branch}*:refs/tags/${branch}*`, (err, stdout, stderr) => {
+                        console.log("Completed git config http.extraHeader");
+
+                   
+                        exec(`git remote add origin ${serverUrl}/scm/${userOrgName}/${userRepoName}.git`, (err, stdout, stderr) => {
                             if (err) {
                                 console.log(err);
                                 core.setOutput("choreo-status", "failed");
@@ -76,28 +78,39 @@ try  {
                             }
                             console.log(stdout);
                             console.log(stderr);
-                            console.log("Completed git fetch");
-                            exec(`git branch --list --remote origin/${branch}`, (err, stdout, stderr) => {
+                            console.log("Completed git remote add origin");
+                            exec(`git -c protocol.version=2 fetch --no-tags --prune --progress --no-recurse-submodules --depth=1 origin +refs/heads/${branch}*:refs/remotes/origin/${branch}* +refs/tags/${branch}*:refs/tags/${branch}*`, (err, stdout, stderr) => {
                                 if (err) {
                                     console.log(err);
                                     core.setOutput("choreo-status", "failed");
                                     core.setFailed(err.message);
                                     return;
                                 }
-                                console.log("branches");
-                                console.log("branches" + stdout);
+                                console.log(stdout);
                                 console.log(stderr);
-                                console.log("Completed git branch --list --remote");
-                                exec(`git checkout --progress --force -B ${branch} refs/remotes/origin/${branch}`, (err, stdout, stderr) => {
+                                console.log("Completed git fetch");
+                                exec(`git branch --list --remote origin/${branch}`, (err, stdout, stderr) => {
                                     if (err) {
                                         console.log(err);
                                         core.setOutput("choreo-status", "failed");
                                         core.setFailed(err.message);
                                         return;
                                     }
-                                    console.log(stdout);
+                                    console.log("branches");
+                                    console.log("branches" + stdout);
                                     console.log(stderr);
-                                    console.log("Completed checkout to bitbucket repo");
+                                    console.log("Completed git branch --list --remote");
+                                    exec(`git checkout --progress --force -B ${branch} refs/remotes/origin/${branch}`, (err, stdout, stderr) => {
+                                        if (err) {
+                                            console.log(err);
+                                            core.setOutput("choreo-status", "failed");
+                                            core.setFailed(err.message);
+                                            return;
+                                        }
+                                        console.log(stdout);
+                                        console.log(stderr);
+                                        console.log("Completed checkout to bitbucket server repo");
+                                    });
                                 });
                             });
                         });
