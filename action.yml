@@ -12,8 +12,11 @@ inputs:
     required: true
     description: 'The token of the user repository'
   username:
-    required: true
+    required: false
     description: 'The username of the user repository'
+  serverUrl:
+    required: false
+    description: 'The url of the Bitbucket Server'
   userOrgName:
     required: true
     description: 'The organization name of the user repository'
