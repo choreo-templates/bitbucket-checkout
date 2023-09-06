@@ -7,6 +7,7 @@ const execProm = util.promisify(exec);
 async function run() {
 try  {
     const token = core.getInput('token');
+    const username = core.getInput('username');
     const serverUrl = core.getInput('serverUrl');
     const userOrgName = core.getInput('userOrgName');
     const userRepoName = core.getInput('userRepoName');
@@ -67,9 +68,21 @@ try  {
                         console.log(stdout);
                         console.log(stderr);
                         console.log("Completed git config http.extraHeader");
-
-                   
-                        exec(`git remote add origin ${serverUrl}/scm/${userOrgName}/${userRepoName}.git`, (err, stdout, stderr) => {
+                        
+                        if(serverUrl!=""){
+                            exec(`git config http.extraHeader="Authorization: Bearer ${token}"`,(err,stdout,stderr)=>{
+                              if (err) {
+                                console.log(err);
+                                core.setOutput("choreo-status", "failed");
+                                core.setFailed(err.message);
+                                return;
+                            }
+                            console.log(stdout);
+                            console.log(stderr);
+                            console.log("Completed git config http.extraHeader");
+                            });
+                        }                  
+                        exec(serverUrl!="" ? `git remote add origin ${serverUrl}/scm/${userOrgName}/${userRepoName}.git`:`git remote add origin https://${username}:${token}@bitbucket.org/${userOrgName}/${userRepoName}.git`, (err, stdout, stderr) => {
                             if (err) {
                                 console.log(err);
                                 core.setOutput("choreo-status", "failed");
