@@ -2953,7 +2953,7 @@ try  {
                                     }
                                     console.log(stdout);
                                     console.log(stderr);
-                                    console.log("Completed checkout to bitbucket server repo");
+                                    console.log("Completed checkout to bitbucket repo");
                                 });
                             });
                         });
