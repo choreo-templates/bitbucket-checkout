@@ -2901,7 +2901,7 @@ try  {
                     console.log(stderr);
                     console.log("Completed git config user.name and user.email");             
                     if(serverUrl!=""){
-                        exec(`git config http.extraHeader="Authorization: Bearer ${token}"`,(err,stdout,stderr)=>{
+                        exec(`git config http.extraHeader "Authorization: Bearer ${token}"`,(err,stdout,stderr)=>{
                             if (err) {
                                 console.log(err);
                                 core.setOutput("choreo-status", "failed");
